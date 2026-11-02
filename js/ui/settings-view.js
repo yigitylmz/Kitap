@@ -11,7 +11,7 @@ import {
   importGoodreadsCsv
 } from '../backup.js';
 import { loadSampleData, loadStressTestData, clearAllSampleData } from '../sample-data.js';
-import { isFirebaseConfigured } from '../firebase-config.js';
+import { isFirebaseConfigured } from '../../firebase-config.js';
 import { getCurrentUser } from '../auth.js';
 import { icons, showToast, openModal, closeModal } from './components.js';
 import { showAccountModal } from './account-modal.js';

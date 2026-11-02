@@ -2,7 +2,7 @@
 // SATIR PWA - FIREBASE HESAP VE BULUT EŞLEME MODALI (ACCOUNT & AUTH MODAL)
 // ==============================================================================
 
-import { isFirebaseConfigured } from '../firebase-config.js';
+import { isFirebaseConfigured } from '../../firebase-config.js';
 import {
   getCurrentUser,
   loginWithEmail,

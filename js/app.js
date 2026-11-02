@@ -6,7 +6,7 @@ import { store } from './store.js';
 import { openDB } from './db.js';
 import { restoreActiveSession } from './timer.js';
 import { initAuth } from './auth.js';
-import { onSyncStateChange, refreshPendingCount, syncNow } from './sync.js';
+import { onSyncStateChange, refreshPendingCount } from './sync.js';
 import { navigateTo, renderCurrentView, openAddBookModal } from './ui/router.js';
 import { showToast, icons } from './ui/components.js';
 import { checkAndShowOnboarding } from './ui/onboarding-modal.js';
@@ -15,34 +15,47 @@ import { showAccountModal } from './ui/account-modal.js';
 async function bootstrap() {
   console.log('[Satır] Uygulama başlatılıyor...');
 
-  // 1. IndexedDB Veritabanını Aç
+  // 1. Arayüz Dinleyicilerini ve Sekmeleri Anında Bağla (Kullanıcı dokunuşları gecikmesin)
+  try {
+    setupTabBarEvents();
+    setupHeaderEvents();
+  } catch (uiErr) {
+    console.warn('[Satır] UI eventleri bağlanırken hata:', uiErr);
+  }
+
+  // 2. İlk Görünümü Anında Ekrana Çiz (Skeleton'u hemen kaldır)
+  try {
+    handleInitialUrlParams();
+  } catch (navErr) {
+    console.warn('[Satır] İlk rota açılırken hata:', navErr);
+    navigateTo('today');
+  }
+
+  // 3. IndexedDB ve Store'u Arka Planda Yükle, Veriler Gelince Görünümü Yenile
   try {
     await openDB();
-  } catch (dbErr) {
-    console.error('[Satır] Veritabanı başlatılamadı:', dbErr);
-  }
-
-  // 2. Mağaza Durumunu Yükle
-  try {
     await store.init();
+    renderCurrentView(); // Veriler geldikten sonra taze görünüm
   } catch (storeErr) {
-    console.error('[Satır] Mağaza yüklenemedi:', storeErr);
+    console.error('[Satır] Veritabanı veya mağaza yüklenemedi:', storeErr);
   }
 
-  // 3. Yarım Kalan Okuma Seansını Kurtar (Arka plandan dönen oturum)
+  // 4. Yarım Kalan Okuma Seansını Kurtar
   try {
     await restoreActiveSession();
-  } catch (sessionErr) {
-    console.warn('[Satır] Seans kurtarılamadı:', sessionErr);
-  }
+  } catch (_) {}
 
-  // 4. Service Worker Kaydı ve Güncelleme Bildirimi
+  // 5. İlk Açılış Onboarding Kontrolü
+  try {
+    checkAndShowOnboarding();
+  } catch (_) {}
+
+  // 6. Service Worker Kaydı (Çevrimdışı ve PWA)
   if ('serviceWorker' in navigator) {
     try {
       const reg = await navigator.serviceWorker.register('./sw.js');
       console.log('[Satır] Service Worker kayıt başarılı.');
 
-      // Yeni bir sürüm hazır olduğunda kullanıcıya bildir
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
         if (newWorker) {
@@ -65,30 +78,18 @@ async function bootstrap() {
     }
   }
 
-  // 5. Firebase Kimlik ve Eşleme Başlat (Yapılandırma varsa)
+  // 7. Firebase Kimlik ve Eşleme Başlat (Yapılandırma varsa)
   try {
     await initAuth();
     await refreshPendingCount();
   } catch (_) {}
 
-  // 6. Üst Çubuk Olayları ve Sayaçları
-  setupHeaderEvents();
-
-  // 7. Alt Sekme Çubuğu Dinleyicileri
-  setupTabBarEvents();
-
-  // 8. URL Parametrelerini Kontrol Et
-  handleInitialUrlParams();
-
-  // 9. İlk Açılış Onboarding Kontrolü
-  checkAndShowOnboarding();
-
-  // 10. Rozet Bildirim Dinleyicisi
+  // 8. Rozet Bildirim Dinleyicisi
   store.on('badge_unlocked', (badge) => {
     showToast(`🏆 Yeni Rozet: ${badge.title}! (${badge.desc})`, { duration: 5000, type: 'success' });
   });
 
-  // 11. Sync Durumu Dinleyicisi
+  // 9. Sync Durumu Dinleyicisi
   onSyncStateChange((syncState) => {
     const indicator = document.getElementById('header-sync-indicator');
     if (indicator) {
@@ -124,7 +125,8 @@ function setupHeaderEvents() {
   const streakPill = document.getElementById('header-streak-pill');
   if (streakPill) {
     const updateStreakHeader = (st) => {
-      streakPill.innerHTML = `${icons.fire} ${st.currentStreak} gün`;
+      const streakVal = st ? (st.currentStreak || 0) : 0;
+      streakPill.innerHTML = `${icons.fire} ${streakVal} gün`;
     };
     updateStreakHeader(store.getState().streak);
     store.on('streak_updated', updateStreakHeader);
@@ -170,9 +172,9 @@ function handleInitialUrlParams() {
   }
 }
 
-// Uygulamayı Başlat
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bootstrap);
-} else {
+// Uygulamayı Başlat (Gecikmesiz Doğrudan Çalıştırma)
+if (document.body) {
   bootstrap();
+} else {
+  document.addEventListener('DOMContentLoaded', bootstrap);
 }

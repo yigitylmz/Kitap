@@ -1,7 +1,7 @@
 // ==============================================================================
 // SATIR PWA - SERVICE WORKER
 // ==============================================================================
-const CACHE_VERSION = 'satir-v1.0.0';
+const CACHE_VERSION = 'satir-v1.0.1';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const DATA_CACHE = `data-${CACHE_VERSION}`;
 

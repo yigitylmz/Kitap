@@ -27,10 +27,16 @@ export function renderTodayView() {
   // Şu an okunan kitap
   const currentBook = state.books.find((b) => !b.deleted && b.status === 'reading') || state.books.find((b) => !b.deleted);
 
-  // Safari Standalone Kontrolü
-  const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-  const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
-  const showPwaBanner = isIos && !isStandalone && !sessionStorage.getItem('pwa_banner_dismissed');
+  // Safari Standalone Kontrolü (Güvenli try/catch ile)
+  let showPwaBanner = false;
+  try {
+    const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+    const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+    const dismissed = window.sessionStorage ? window.sessionStorage.getItem('pwa_banner_dismissed') : null;
+    showPwaBanner = isIos && !isStandalone && !dismissed;
+  } catch (_) {
+    showPwaBanner = false;
+  }
 
   return `
     <div class="today-view">

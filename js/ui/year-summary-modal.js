@@ -104,7 +104,11 @@ function drawYearSummaryCard(canvas, summary) {
     // Kutu arka planı
     ctx.fillStyle = '#211e1b';
     ctx.beginPath();
-    ctx.roundRect(boxX, boxY, boxW, boxH, 20);
+    if (typeof ctx.roundRect === 'function') {
+      ctx.roundRect(boxX, boxY, boxW, boxH, 20);
+    } else {
+      ctx.rect(boxX, boxY, boxW, boxH);
+    }
     ctx.fill();
     ctx.strokeStyle = '#36312b';
     ctx.lineWidth = 2;
@@ -136,7 +140,11 @@ function drawYearSummaryCard(canvas, summary) {
     const itemY = detailY + idx * 110;
     ctx.fillStyle = '#1c1917';
     ctx.beginPath();
-    ctx.roundRect(110, itemY, 860, 90, 16);
+    if (typeof ctx.roundRect === 'function') {
+      ctx.roundRect(110, itemY, 860, 90, 16);
+    } else {
+      ctx.rect(110, itemY, 860, 90);
+    }
     ctx.fill();
 
     ctx.textAlign = 'left';
