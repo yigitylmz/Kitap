@@ -1,0 +1,432 @@
+rules_version = '2';
+
+/**
+ * ==============================================================================
+ * SATIR PWA - CLOUD FIRESTORE GÜVENLİK KURALLARI (SECURITY RULES)
+ * ==============================================================================
+ *
+ * 📖 TÜRKÇE KURULUM VE YAYINLAMA TALİMATLARI:
+ * ------------------------------------------------------------------------------
+ * YÖNTEM 1: Firebase Konsolu Üzerinden (En Pratik Yol)
+ * 1. https://console.firebase.google.com/ adresine gidin ve projenizi seçin.
+ * 2. Sol menüde "Build" (Geliştir) sekmesi altından "Firestore Database"e tıklayın.
+ * 3. Üstteki panelden "Rules" (Kurallar) sekmesine geçin.
+ * 4. Düzenleyicideki mevcut kuralların hepsini silin ve bu dosyanın tamamını yapıştırın.
+ * 5. "Publish" (Yayınla) butonuna tıklayın. Kurallar ortalama 1 dakika içinde tüm dünyaya yayılır.
+ *
+ * YÖNTEM 2: Firebase CLI İle Komut Satırından
+ * 1. Terminalde proje klasörünüze gidin (`satir-pwa/app` veya proje kök dizini).
+ * 2. `firebase deploy --only firestore:rules` komutunu çalıştırın.
+ *
+ * ------------------------------------------------------------------------------
+ * 📖 ENGLISH DEPLOYMENT INSTRUCTIONS:
+ * ------------------------------------------------------------------------------
+ * METHOD 1: Via Firebase Console (Quickest)
+ * 1. Navigate to https://console.firebase.google.com/ and open your project.
+ * 2. Select "Firestore Database" from the left sidebar (under "Build").
+ * 3. Click on the "Rules" tab at the top.
+ * 4. Replace all existing text in the editor with the entire content of this file.
+ * 5. Click "Publish". Changes take effect globally within roughly one minute.
+ *
+ * METHOD 2: Via Firebase CLI
+ * 1. Navigate to your project directory in terminal.
+ * 2. Run: `firebase deploy --only firestore:rules`
+ * ==============================================================================
+ */
+
+// ===============================================================
+// Assumed Data Model / Varsayılan Veri Modeli
+// ===============================================================
+//
+// Root collection path: /users/{userId}
+// All documents and collections are strictly isolated by authenticated user UID.
+//
+// 1. User Profile: /users/{userId}
+//    - uid: string (optional, must match {userId})
+//    - email: string (optional, max 254 chars, valid email syntax)
+//    - displayName: string (optional, max 100 chars)
+//    - photoURL: string | null (optional, max 2048 chars)
+//    - createdAt: timestamp | number | string (optional, immutable)
+//    - updatedAt: timestamp | number | string (optional)
+//    - deleted: bool (optional)
+//
+// 2. Books: /users/{userId}/books/{bookId}
+//    - id: string (optional, max 128 chars, immutable)
+//    - title: string (optional, max 300 chars)
+//    - author: string (optional, max 200 chars)
+//    - isbn: string (optional, max 32 chars)
+//    - genre: string (optional, max 100 chars)
+//    - category: string (optional, max 100 chars)
+//    - status: string (optional, max 50 chars)
+//    - coverUrl: string | null (optional, max 2048 chars - binary blob safeguard)
+//    - rating: number | null (optional, 0.0 to 5.0)
+//    - pageCount / totalPages: number (optional, 0 to 100000)
+//    - currentPage: number (optional, 0 to 100000)
+//    - description: string (optional, max 5000 chars)
+//    - notes: string (optional, max 10000 chars)
+//    - isFavorite / favorite: bool (optional)
+//    - startDate / finishDate: timestamp | number | string (optional)
+//    - createdAt: timestamp | number | string (optional, immutable)
+//    - updatedAt: timestamp | number | string (optional)
+//    - deleted: bool (optional)
+//
+// 3. Reading Sessions: /users/{userId}/sessions/{sessionId}
+//    - id: string (optional, max 128 chars, immutable)
+//    - bookId: string (optional, max 128 chars)
+//    - startPage / endPage: number (optional, 0 to 100000)
+//    - pagesRead: number (optional, 0 to 10000)
+//    - duration / durationMinutes / durationSeconds: number (optional, 0 to 864000)
+//    - startTime / endTime / date: timestamp | number | string (optional)
+//    - notes: string (optional, max 5000 chars)
+//    - createdAt: timestamp | number | string (optional, immutable)
+//    - updatedAt: timestamp | number | string (optional)
+//    - deleted: bool (optional)
+//
+// 4. Quotes / Highlights: /users/{userId}/quotes/{quoteId}
+//    - id: string (optional, max 128 chars, immutable)
+//    - bookId: string (optional, max 128 chars)
+//    - bookTitle: string (optional, max 300 chars)
+//    - author: string (optional, max 200 chars)
+//    - text / quote / content: string (optional, max 5000 chars)
+//    - page: number (optional, 0 to 100000)
+//    - tags: list (optional, max 20 items)
+//    - isFavorite: bool (optional)
+//    - createdAt: timestamp | number | string (optional, immutable)
+//    - updatedAt: timestamp | number | string (optional)
+//    - deleted: bool (optional)
+//
+// 5. Reviews: /users/{userId}/reviews/{reviewId}
+//    - id: string (optional, max 128 chars, immutable)
+//    - bookId: string (optional, max 128 chars)
+//    - rating: number | null (optional, 0.0 to 5.0)
+//    - reviewText / content: string (optional, max 20000 chars)
+//    - title: string (optional, max 300 chars)
+//    - spoiler: bool (optional)
+//    - readCount: number (optional, 0 to 1000)
+//    - createdAt: timestamp | number | string (optional, immutable)
+//    - updatedAt: timestamp | number | string (optional)
+//    - deleted: bool (optional)
+//
+// 6. Notes: /users/{userId}/notes/{noteId}
+//    - id: string (optional, max 128 chars, immutable)
+//    - bookId: string (optional, max 128 chars)
+//    - title: string (optional, max 300 chars)
+//    - content / text: string (optional, max 20000 chars)
+//    - page: number (optional, 0 to 100000)
+//    - tags: list (optional, max 20 items)
+//    - createdAt: timestamp | number | string (optional, immutable)
+//    - updatedAt: timestamp | number | string (optional)
+//    - deleted: bool (optional)
+//
+// 7. Metadata & Settings: /users/{userId}/meta/{docId}
+//    - theme: string (optional, max 50 chars)
+//    - dailyGoalMinutes: number (optional, 0 to 1440)
+//    - yearlyBookGoal: number (optional, 0 to 10000)
+//    - updatedAt: timestamp | number | string (optional)
+//    - deleted: bool (optional)
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the caller is an authenticated Firebase user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the caller's UID strictly matches the document owner UID in path
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Ensure UID field inside document payload matches userId path if present
+    function uidUnchanged(userId) {
+      return !('uid' in request.resource.data) || request.resource.data.uid == userId;
+    }
+
+    // Validate email syntax (RFC 5322 compatible regex)
+    function isValidEmail(email) {
+      return email is string &&
+        email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // Timestamp validator: accepts Firestore Timestamp, Unix timestamp number, or ISO 8601 string.
+    // NOTE: Offline-First Support: Timestamps are checked for type/size validity rather than strict
+    // request.time delta to allow reliable syncing of offline-created client records.
+    function isValidTimestamp(val) {
+      return val is timestamp ||
+        (val is number && val > 0) ||
+        (val is string && val.size() <= 40);
+    }
+
+    function isValidOptionalTimestamp(data, field) {
+      return !(field in data) || isValidTimestamp(data[field]);
+    }
+
+    // String validator with minimum and maximum length bounds (prevents DoS/resource exhaustion)
+    function isValidOptionalString(data, field, minLen, maxLen) {
+      return !(field in data) ||
+        (data[field] is string && data[field].size() >= minLen && data[field].size() <= maxLen);
+    }
+
+    // Number validator with range bounds
+    function isValidOptionalNumber(data, field, minVal, maxVal) {
+      return !(field in data) ||
+        (data[field] is number && data[field] >= minVal && data[field] <= maxVal);
+    }
+
+    // Boolean validator
+    function isValidOptionalBool(data, field) {
+      return !(field in data) || data[field] is bool;
+    }
+
+    // List validator with maximum item count constraint
+    function isValidOptionalList(data, field, maxSize) {
+      return !(field in data) ||
+        (data[field] is list && data[field].size() <= maxSize);
+    }
+
+    // Cover URL safeguard: must be a URL/string under 2048 chars or null.
+    // Prevents storing massive base64 image strings / binary blobs directly in Firestore.
+    function isValidCoverUrl(val) {
+      return val == null || (val is string && val.size() <= 2048);
+    }
+
+    function isValidOptionalCoverUrl(data) {
+      return !('coverUrl' in data) || isValidCoverUrl(data.coverUrl);
+    }
+
+    // Rating safeguard: must be a numeric value between 0 and 5, or null
+    function isValidRating(val) {
+      return val == null || (val is number && val >= 0 && val <= 5);
+    }
+
+    function isValidOptionalRating(data) {
+      return !('rating' in data) || isValidRating(data.rating);
+    }
+
+    // Document ID immutability safeguard on updates
+    function isIdUnchanged() {
+      return !('id' in resource.data) ||
+        ('id' in request.resource.data && request.resource.data.id == resource.data.id);
+    }
+
+    // Creation timestamp immutability safeguard on updates
+    function isCreatedAtUnchanged() {
+      return !('createdAt' in resource.data) ||
+        ('createdAt' in request.resource.data && request.resource.data.createdAt == resource.data.createdAt);
+    }
+
+    // ===============================================================
+    // Domain Validators (Applied to both create and update operations)
+    // ===============================================================
+
+    // User Profile Document Validator
+    function isValidUser(data, userId) {
+      return data.keys().size() <= 30 &&
+        uidUnchanged(userId) &&
+        isValidOptionalString(data, 'email', 3, 254) &&
+        isValidOptionalString(data, 'displayName', 0, 100) &&
+        (!('photoURL' in data) || isValidCoverUrl(data.photoURL)) &&
+        isValidOptionalTimestamp(data, 'createdAt') &&
+        isValidOptionalTimestamp(data, 'updatedAt') &&
+        isValidOptionalBool(data, 'deleted');
+    }
+
+    // Book Validator
+    function isValidBook(data) {
+      return data.keys().size() <= 50 &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        isValidOptionalString(data, 'title', 1, 300) &&
+        isValidOptionalString(data, 'author', 0, 200) &&
+        isValidOptionalString(data, 'isbn', 0, 32) &&
+        isValidOptionalString(data, 'genre', 0, 100) &&
+        isValidOptionalString(data, 'category', 0, 100) &&
+        isValidOptionalString(data, 'status', 0, 50) &&
+        isValidOptionalString(data, 'description', 0, 5000) &&
+        isValidOptionalString(data, 'notes', 0, 10000) &&
+        isValidOptionalCoverUrl(data) &&
+        isValidOptionalRating(data) &&
+        isValidOptionalNumber(data, 'pageCount', 0, 100000) &&
+        isValidOptionalNumber(data, 'totalPages', 0, 100000) &&
+        isValidOptionalNumber(data, 'currentPage', 0, 100000) &&
+        isValidOptionalBool(data, 'isFavorite') &&
+        isValidOptionalBool(data, 'favorite') &&
+        isValidOptionalTimestamp(data, 'startDate') &&
+        isValidOptionalTimestamp(data, 'finishDate') &&
+        isValidOptionalTimestamp(data, 'createdAt') &&
+        isValidOptionalTimestamp(data, 'updatedAt') &&
+        isValidOptionalBool(data, 'deleted');
+    }
+
+    // Reading Session Validator
+    function isValidSession(data) {
+      return data.keys().size() <= 30 &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        isValidOptionalString(data, 'bookId', 1, 128) &&
+        isValidOptionalNumber(data, 'startPage', 0, 100000) &&
+        isValidOptionalNumber(data, 'endPage', 0, 100000) &&
+        isValidOptionalNumber(data, 'pagesRead', 0, 10000) &&
+        isValidOptionalNumber(data, 'duration', 0, 864000) &&
+        isValidOptionalNumber(data, 'durationMinutes', 0, 86400) &&
+        isValidOptionalNumber(data, 'durationSeconds', 0, 864000) &&
+        isValidOptionalTimestamp(data, 'startTime') &&
+        isValidOptionalTimestamp(data, 'endTime') &&
+        isValidOptionalTimestamp(data, 'date') &&
+        isValidOptionalString(data, 'notes', 0, 5000) &&
+        isValidOptionalTimestamp(data, 'createdAt') &&
+        isValidOptionalTimestamp(data, 'updatedAt') &&
+        isValidOptionalBool(data, 'deleted');
+    }
+
+    // Quote / Highlight Validator
+    function isValidQuote(data) {
+      return data.keys().size() <= 30 &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        isValidOptionalString(data, 'bookId', 0, 128) &&
+        isValidOptionalString(data, 'bookTitle', 0, 300) &&
+        isValidOptionalString(data, 'author', 0, 200) &&
+        isValidOptionalString(data, 'text', 0, 5000) &&
+        isValidOptionalString(data, 'quote', 0, 5000) &&
+        isValidOptionalString(data, 'content', 0, 5000) &&
+        isValidOptionalNumber(data, 'page', 0, 100000) &&
+        isValidOptionalList(data, 'tags', 20) &&
+        isValidOptionalBool(data, 'isFavorite') &&
+        isValidOptionalTimestamp(data, 'createdAt') &&
+        isValidOptionalTimestamp(data, 'updatedAt') &&
+        isValidOptionalBool(data, 'deleted');
+    }
+
+    // Review Validator
+    function isValidReview(data) {
+      return data.keys().size() <= 30 &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        isValidOptionalString(data, 'bookId', 1, 128) &&
+        isValidOptionalRating(data) &&
+        isValidOptionalString(data, 'reviewText', 0, 20000) &&
+        isValidOptionalString(data, 'content', 0, 20000) &&
+        isValidOptionalString(data, 'title', 0, 300) &&
+        isValidOptionalBool(data, 'spoiler') &&
+        isValidOptionalNumber(data, 'readCount', 0, 1000) &&
+        isValidOptionalTimestamp(data, 'createdAt') &&
+        isValidOptionalTimestamp(data, 'updatedAt') &&
+        isValidOptionalBool(data, 'deleted');
+    }
+
+    // Note Validator
+    function isValidNote(data) {
+      return data.keys().size() <= 30 &&
+        isValidOptionalString(data, 'id', 1, 128) &&
+        isValidOptionalString(data, 'bookId', 0, 128) &&
+        isValidOptionalString(data, 'title', 0, 300) &&
+        isValidOptionalString(data, 'content', 0, 20000) &&
+        isValidOptionalString(data, 'text', 0, 20000) &&
+        isValidOptionalNumber(data, 'page', 0, 100000) &&
+        isValidOptionalList(data, 'tags', 20) &&
+        isValidOptionalTimestamp(data, 'createdAt') &&
+        isValidOptionalTimestamp(data, 'updatedAt') &&
+        isValidOptionalBool(data, 'deleted');
+    }
+
+    // Meta & Settings Validator
+    function isValidMeta(data) {
+      return data.keys().size() <= 50 &&
+        isValidOptionalString(data, 'theme', 0, 50) &&
+        isValidOptionalNumber(data, 'dailyGoalMinutes', 0, 1440) &&
+        isValidOptionalNumber(data, 'yearlyBookGoal', 0, 10000) &&
+        isValidOptionalTimestamp(data, 'updatedAt') &&
+        isValidOptionalBool(data, 'deleted');
+    }
+
+    // ===============================================================
+    // Collection Match Rules
+    // ===============================================================
+
+    // User Profile Document (/users/{userId})
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data, userId);
+      allow update: if isOwner(userId) &&
+                    isValidUser(request.resource.data, userId) &&
+                    isCreatedAtUnchanged();
+      allow delete: if isOwner(userId);
+    }
+
+    // Books Subcollection (/users/{userId}/books/{bookId})
+    match /users/{userId}/books/{bookId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidBook(request.resource.data);
+      allow update: if isOwner(userId) &&
+                    isValidBook(request.resource.data) &&
+                    isIdUnchanged() &&
+                    isCreatedAtUnchanged();
+      allow delete: if isOwner(userId);
+    }
+
+    // Reading Sessions Subcollection (/users/{userId}/sessions/{sessionId})
+    match /users/{userId}/sessions/{sessionId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidSession(request.resource.data);
+      allow update: if isOwner(userId) &&
+                    isValidSession(request.resource.data) &&
+                    isIdUnchanged() &&
+                    isCreatedAtUnchanged();
+      allow delete: if isOwner(userId);
+    }
+
+    // Quotes / Highlights Subcollection (/users/{userId}/quotes/{quoteId})
+    match /users/{userId}/quotes/{quoteId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidQuote(request.resource.data);
+      allow update: if isOwner(userId) &&
+                    isValidQuote(request.resource.data) &&
+                    isIdUnchanged() &&
+                    isCreatedAtUnchanged();
+      allow delete: if isOwner(userId);
+    }
+
+    // Reviews Subcollection (/users/{userId}/reviews/{reviewId})
+    match /users/{userId}/reviews/{reviewId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidReview(request.resource.data);
+      allow update: if isOwner(userId) &&
+                    isValidReview(request.resource.data) &&
+                    isIdUnchanged() &&
+                    isCreatedAtUnchanged();
+      allow delete: if isOwner(userId);
+    }
+
+    // Reading Notes Subcollection (/users/{userId}/notes/{noteId})
+    match /users/{userId}/notes/{noteId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidNote(request.resource.data);
+      allow update: if isOwner(userId) &&
+                    isValidNote(request.resource.data) &&
+                    isIdUnchanged() &&
+                    isCreatedAtUnchanged();
+      allow delete: if isOwner(userId);
+    }
+
+    // Meta & Settings Subcollection (/users/{userId}/meta/{docId})
+    match /users/{userId}/meta/{docId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidMeta(request.resource.data);
+      allow update: if isOwner(userId) &&
+                    isValidMeta(request.resource.data);
+      allow delete: if isOwner(userId);
+    }
+
+    // ===============================================================
+    // Default Deny
+    // ===============================================================
+    // Explicitly deny read and write access to all other paths
+    match /{document=**} {
+      allow read, write: false;
+    }
+  }
+}

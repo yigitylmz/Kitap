@@ -1,0 +1,662 @@
+/* ==============================================================================
+   SATIR PWA - BİLEŞEN STİLLERİ (COMPONENTS)
+   ============================================================================== */
+
+/* ==============================================================================
+   KİTAP KARTLARI VE LİSTESİ
+   ============================================================================== */
+
+.book-card {
+  display: flex;
+  gap: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.book-card:active {
+  transform: scale(0.985);
+  border-color: var(--border-medium);
+}
+
+.book-cover-wrapper {
+  width: 72px;
+  height: 104px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background-color: var(--bg-surface);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.book-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.book-cover-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  text-align: center;
+  background: linear-gradient(145deg, var(--bg-surface), var(--bg-card-subtle));
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.book-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.book-header-line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.book-title {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-authors {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.book-meta-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.meta-badge {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  background-color: var(--bg-card-subtle);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.meta-badge.format-badge {
+  color: var(--accent-secondary);
+  background-color: var(--accent-light);
+  border-color: transparent;
+}
+
+/* İlerleme Çubuğu */
+.progress-bar-container {
+  margin-top: 8px;
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  transition: width var(--transition-normal);
+}
+
+/* ==============================================================================
+   RAF SEÇİCİ VE FİLTRE HATLARI
+   ============================================================================== */
+
+.shelf-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+
+.shelf-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.shelf-tab-btn {
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-fast);
+}
+
+.shelf-tab-btn.active {
+  background-color: var(--accent-secondary);
+  color: #ffffff;
+  border-color: var(--accent-secondary);
+}
+
+.filter-tags-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 0 12px 0;
+  scrollbar-width: none;
+}
+
+.filter-tags-row::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-tag-chip {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-card-subtle);
+  color: var(--text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+  border: 1px solid var(--border-subtle);
+}
+
+.filter-tag-chip.active {
+  background-color: var(--accent-light);
+  color: var(--accent-secondary);
+  border-color: var(--accent-secondary);
+}
+
+/* Arama Çubuğu */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon-left {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 38px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.search-input:focus {
+  border-color: var(--border-focus);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 10px;
+  color: var(--text-muted);
+  padding: 4px;
+}
+
+.search-action-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+/* ==============================================================================
+   OKUMA ZAMANLAYICISI VE ODAK EKRANI
+   ============================================================================== */
+
+.timer-hero-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.timer-circle-wrapper {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.timer-svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.timer-track-circle {
+  fill: none;
+  stroke: var(--bg-surface);
+  stroke-width: 10;
+}
+
+.timer-progress-circle {
+  fill: none;
+  stroke: var(--accent-secondary);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.timer-inner-content {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+}
+
+.timer-sublabel {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.timer-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.timer-btn-primary {
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+  color: #ffffff;
+  box-shadow: 0 6px 20px var(--accent-glow);
+  font-size: 24px;
+}
+
+.timer-btn-secondary {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+}
+
+/* Ambient Ses Paneli */
+.ambient-sound-card {
+  width: 100%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ambient-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ambient-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.ambient-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.ambient-volume-slider {
+  -webkit-appearance: none;
+  width: 90px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  outline: none;
+}
+
+.ambient-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-secondary);
+  cursor: pointer;
+}
+
+/* Odak Modu Tam Ekran Katmanı */
+.focus-mode-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background-color: var(--bg-app);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top, 0px) + 24px) 24px calc(env(safe-area-inset-bottom, 0px) + 24px) 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.focus-mode-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.focus-book-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ==============================================================================
+   ALINTI KARTLARI VE CANVAS PAYLAŞIM
+   ============================================================================== */
+
+.quote-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.quote-text {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--text-main);
+}
+
+.quote-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+}
+
+.quote-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quote-action-btn {
+  color: var(--text-secondary);
+  padding: 4px;
+  border-radius: var(--radius-xs);
+}
+
+/* ==============================================================================
+   GRAFİKLER VE İSTATİSTİK WIDGETLARI
+   ============================================================================== */
+
+.stat-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-widget {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-widget-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.stat-widget-val {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.stat-widget-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.chart-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.chart-card-title {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.svg-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ==============================================================================
+   TAKVİM ISI HARİTASI
+   ============================================================================== */
+
+.calendar-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding-bottom: 4px;
+}
+
+.calendar-day-cell {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.calendar-day-cell:active {
+  transform: scale(0.9);
+}
+
+.calendar-day-cell.today {
+  border-color: var(--accent-secondary);
+}
+
+.calendar-day-cell.level-1 { background-color: rgba(234, 88, 12, 0.25); color: var(--text-main); }
+.calendar-day-cell.level-2 { background-color: rgba(234, 88, 12, 0.50); color: #ffffff; }
+.calendar-day-cell.level-3 { background-color: rgba(234, 88, 12, 0.75); color: #ffffff; }
+.calendar-day-cell.level-4 { background-color: var(--accent-primary); color: #ffffff; }
+
+/* ==============================================================================
+   ROZETLER (BADGES)
+   ============================================================================== */
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.badge-item {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.badge-item.locked {
+  opacity: 0.38;
+  filter: grayscale(1);
+}
+
+.badge-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--accent-light);
+  color: var(--accent-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.badge-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.badge-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.25;
+}
+
+/* ==============================================================================
+   SKELETON YÜKLEYİCİLER
+   ============================================================================== */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-card-subtle) 50%, var(--bg-surface) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.6s infinite ease-in-out;
+  border-radius: var(--radius-xs);
+}
+
+@keyframes skeletonPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1917" />
+      <stop offset="50%" stop-color="#141210" />
+      <stop offset="100%" stop-color="#0a0908" />
+    </linearGradient>
+    <linearGradient id="pageLeftM" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdfbf7" />
+      <stop offset="100%" stop-color="#e7dfd5" />
+    </linearGradient>
+    <linearGradient id="pageRightM" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5efe6" />
+      <stop offset="100%" stop-color="#ded4c5" />
+    </linearGradient>
+    <linearGradient id="ribbonM" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ea580c" />
+      <stop offset="100%" stop-color="#c2410c" />
+    </linearGradient>
+  </defs>
+
+  <!-- Full background for maskable -->
+  <rect width="512" height="512" fill="url(#bgMask)"/>
+
+  <!-- Scaled book inside safe zone (80% scale centered) -->
+  <g transform="translate(51.2, 51.2) scale(0.8)">
+    <circle cx="256" cy="270" r="140" fill="#ea580c" opacity="0.15" />
+    <g transform="translate(0, 10)">
+      <path d="M 256 360 C 210 336, 140 336, 96 352 C 96 230, 96 200, 96 172 C 140 156, 210 156, 256 182 Z" fill="url(#pageLeftM)" />
+      <path d="M 256 360 C 302 336, 372 336, 416 352 C 416 230, 416 200, 416 172 C 372 156, 302 156, 256 182 Z" fill="url(#pageRightM)" />
+      <path d="M 252 182 C 255 180, 257 180, 260 182 L 260 360 C 257 358, 255 358, 252 360 Z" fill="#bfa084" opacity="0.6"/>
+      <line x1="130" y1="210" x2="226" y2="216" stroke="#b89e82" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+      <line x1="130" y1="244" x2="226" y2="250" stroke="#b89e82" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+      <line x1="130" y1="278" x2="226" y2="284" stroke="#b89e82" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+      <line x1="130" y1="312" x2="190" y2="316" stroke="#b89e82" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+      <line x1="286" y1="216" x2="382" y2="210" stroke="#b89e82" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+      <line x1="286" y1="250" x2="382" y2="244" stroke="#b89e82" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+      <line x1="286" y1="284" x2="382" y2="278" stroke="#b89e82" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+      <line x1="286" y1="316" x2="346" y2="312" stroke="#b89e82" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+      <path d="M 244 140 L 268 140 L 268 280 L 256 268 L 244 280 Z" fill="url(#ribbonM)" />
+    </g>
+    <path d="M 390 120 Q 390 135 405 135 Q 390 135 390 150 Q 390 135 375 135 Q 390 135 390 120 Z" fill="#f59e0b" />
+    <circle cx="390" cy="135" r="3" fill="#ffffff" />
+  </g>
+</svg>

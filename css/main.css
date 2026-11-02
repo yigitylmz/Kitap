@@ -1,0 +1,442 @@
+/* ==============================================================================
+   SATIR PWA - ANA DÜZEN VE TEMEL STİLLER (iOS Safari Optimize)
+   ============================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  background-color: var(--bg-app);
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  height: 100%;
+  height: 100dvh;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: var(--bg-app);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+/* Alıntı ve içerik metinlerinde seçime izin ver */
+.selectable-text, .quote-body, .book-synopsis {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* iOS Safari Input Zoom Önlemi: minimum 16px */
+input, select, textarea, button {
+  font-family: inherit;
+  font-size: 16px;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+button:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
+
+/* ==============================================================================
+   UYGULAMA KABUĞU (SHELL) DÜZENİ
+   ============================================================================== */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px 16px;
+  background-color: var(--bg-app);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  min-height: calc(var(--nav-height) + env(safe-area-inset-top, 0px));
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Üst Kısayol Hapları (Streak, Sync) */
+.streak-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--accent-light);
+  color: var(--accent-secondary);
+  border: 1px solid var(--border-subtle);
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sync-status-indicator {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  font-size: 12px;
+}
+
+.sync-status-indicator.synced { color: var(--color-success); }
+.sync-status-indicator.pending { color: var(--color-warning); }
+.sync-status-indicator.error { color: var(--color-danger); }
+.sync-status-indicator.offline { color: var(--text-muted); }
+
+/* Ana İçerik Kaydırma Alanı */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom, 0px) + 24px);
+  scroll-behavior: smooth;
+}
+
+/* ==============================================================================
+   ALT SEKME ÇUBUĞU (TAB BAR)
+   ============================================================================== */
+
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 600px;
+  margin: 0 auto;
+  z-index: 50;
+  height: calc(var(--tabbar-height) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background-color: var(--bg-tabbar);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr 1fr 1fr;
+  align-items: center;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 100%;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.tab-item svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
+  transition: transform var(--transition-fast);
+}
+
+.tab-item.active {
+  color: var(--accent-secondary);
+}
+
+.tab-item.active svg {
+  transform: translateY(-2px);
+}
+
+/* Ortadaki Belirgin Okuma / Zamanlayıcı Butonu */
+.tab-action-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.tab-action-btn {
+  position: absolute;
+  top: -14px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+  color: #ffffff;
+  box-shadow: 0 4px 18px var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--bg-app);
+}
+
+.tab-action-btn svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
+.tab-action-btn:active {
+  transform: scale(0.92);
+}
+
+/* ==============================================================================
+   TOAST VE BİLDİRİM SİSTEMİ
+   ============================================================================== */
+
+.toast-container {
+  position: fixed;
+  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom, 0px) + 16px);
+  left: 16px;
+  right: 16px;
+  max-width: 568px;
+  margin: 0 auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-medium);
+  font-size: 14px;
+  animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast.toast-undo .toast-btn {
+  color: var(--accent-secondary);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--accent-light);
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ==============================================================================
+   MODAL VE BOTTOM SHEET ALTYAPISI
+   ============================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-modal-overlay);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bottom-sheet {
+  width: 100%;
+  max-width: 600px;
+  max-height: 90dvh;
+  background-color: var(--bg-card);
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sheet);
+  border-top: 1px solid var(--border-medium);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform var(--transition-normal);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+  overflow: hidden;
+}
+
+.modal-backdrop.open .bottom-sheet {
+  transform: translateY(0);
+}
+
+.sheet-handle-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 6px 0;
+  cursor: grab;
+}
+
+.sheet-handle {
+  width: 38px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background-color: var(--border-medium);
+}
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px 14px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sheet-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sheet-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card-subtle);
+  color: var(--text-secondary);
+}
+
+.sheet-body {
+  padding: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+}
+
+/* ==============================================================================
+   SAFARI STANDALONE / PWA KURULUM BANNERI
+   ============================================================================== */
+
+.pwa-install-banner {
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-card-subtle));
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.pwa-banner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pwa-banner-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--accent-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pwa-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.pwa-step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--accent-light);
+  color: var(--accent-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prefers Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

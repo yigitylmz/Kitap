@@ -1,0 +1,150 @@
+/* ==============================================================================
+   SATIR PWA - TEMALAR VE RENK DEĞİŞKENLERİ
+   ============================================================================== */
+
+:root {
+  /* Font Yığınları */
+  --font-serif: ui-serif, "New York", -apple-system-ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Boyutlar ve Boşluklar */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --nav-height: 56px;
+  --tabbar-height: 64px;
+
+  /* Animasyon Zamanlaması */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Varsayılan / Koyu Tema (Obsidian & Amber) */
+:root,
+[data-theme="dark"] {
+  --color-scheme: dark;
+  --bg-app: #121110;
+  --bg-card: #1c1a18;
+  --bg-card-hover: #24221f;
+  --bg-card-subtle: #171514;
+  --bg-surface: #262320;
+  --bg-input: #1a1816;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.72);
+  --bg-tabbar: rgba(22, 20, 19, 0.88);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.14);
+  --border-focus: #f97316;
+
+  --text-main: #f5f2eb;
+  --text-secondary: #a8a29e;
+  --text-muted: #78716c;
+  --text-on-accent: #ffffff;
+
+  --accent-primary: #ea580c;
+  --accent-secondary: #f97316;
+  --accent-light: rgba(234, 88, 12, 0.15);
+  --accent-glow: rgba(234, 88, 12, 0.28);
+
+  --color-success: #10b981;
+  --color-success-bg: rgba(16, 185, 129, 0.14);
+  --color-warning: #f59e0b;
+  --color-warning-bg: rgba(245, 158, 11, 0.14);
+  --color-danger: #ef4444;
+  --color-danger-bg: rgba(239, 68, 68, 0.14);
+  --color-info: #3b82f6;
+  --color-info-bg: rgba(59, 130, 246, 0.14);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --shadow-sheet: 0 -8px 28px rgba(0, 0, 0, 0.65);
+}
+
+/* Açık Tema (Parşömen / Krem & Terracotta) */
+[data-theme="light"] {
+  --color-scheme: light;
+  --bg-app: #f9f7f2;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f3efe6;
+  --bg-card-subtle: #f5f1e8;
+  --bg-surface: #eae3d5;
+  --bg-input: #f0ebe0;
+  --bg-modal-overlay: rgba(28, 25, 23, 0.45);
+  --bg-tabbar: rgba(249, 247, 242, 0.92);
+
+  --border-subtle: rgba(28, 25, 23, 0.08);
+  --border-medium: rgba(28, 25, 23, 0.15);
+  --border-focus: #c2410c;
+
+  --text-main: #1f1b18;
+  --text-secondary: #57534e;
+  --text-muted: #8c857b;
+  --text-on-accent: #ffffff;
+
+  --accent-primary: #c2410c;
+  --accent-secondary: #ea580c;
+  --accent-light: rgba(194, 65, 12, 0.12);
+  --accent-glow: rgba(194, 65, 12, 0.2);
+
+  --color-success: #059669;
+  --color-success-bg: rgba(5, 150, 105, 0.12);
+  --color-warning: #d97706;
+  --color-warning-bg: rgba(217, 119, 6, 0.12);
+  --color-danger: #dc2626;
+  --color-danger-bg: rgba(220, 38, 38, 0.12);
+  --color-info: #2563eb;
+  --color-info-bg: rgba(37, 99, 235, 0.12);
+
+  --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.06);
+  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 10px 24px rgba(28, 25, 23, 0.12);
+  --shadow-sheet: 0 -8px 24px rgba(28, 25, 23, 0.12);
+}
+
+/* Sıcak Sepya Tema (Sıcak Kağıt) */
+[data-theme="sepia"] {
+  --color-scheme: light;
+  --bg-app: #f4ecdc;
+  --bg-card: #fcf8ee;
+  --bg-card-hover: #ece2ce;
+  --bg-card-subtle: #ece3d0;
+  --bg-surface: #ded3bd;
+  --bg-input: #ebe2cf;
+  --bg-modal-overlay: rgba(44, 35, 23, 0.5);
+  --bg-tabbar: rgba(244, 236, 220, 0.94);
+
+  --border-subtle: rgba(70, 52, 33, 0.1);
+  --border-medium: rgba(70, 52, 33, 0.18);
+  --border-focus: #b45309;
+
+  --text-main: #2b2216;
+  --text-secondary: #5c4d3a;
+  --text-muted: #8b7964;
+  --text-on-accent: #ffffff;
+
+  --accent-primary: #b45309;
+  --accent-secondary: #d97706;
+  --accent-light: rgba(180, 83, 9, 0.12);
+  --accent-glow: rgba(180, 83, 9, 0.22);
+
+  --color-success: #047857;
+  --color-success-bg: rgba(4, 120, 87, 0.12);
+  --color-warning: #b45309;
+  --color-warning-bg: rgba(180, 83, 9, 0.12);
+  --color-danger: #b91c1c;
+  --color-danger-bg: rgba(185, 28, 28, 0.12);
+  --color-info: #1d4ed8;
+  --color-info-bg: rgba(29, 78, 216, 0.12);
+
+  --shadow-sm: 0 1px 3px rgba(43, 34, 22, 0.08);
+  --shadow-md: 0 4px 12px rgba(43, 34, 22, 0.1);
+  --shadow-lg: 0 10px 24px rgba(43, 34, 22, 0.14);
+  --shadow-sheet: 0 -8px 24px rgba(43, 34, 22, 0.15);
+}
